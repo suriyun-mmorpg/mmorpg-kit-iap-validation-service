@@ -76,23 +76,25 @@ export class IAPValidationService {
                 switch (response.status) {
                     case VALIDATION.SUCCESS:
                         reply.code(200).send()
-                        break
+                        return
                     case VALIDATION.FAILURE:
                         reply.code(500).send({"message": "Validation status is `FAILURE`"})
-                        break
+                        return
                     case VALIDATION.POSSIBLE_HACK:
                         reply.code(500).send({"message": "Validation status is `POSSIBLE_HACK`"})
-                        break
+                        return
                 }
             })
             .catch((error) => {
                 console.error(error)
                 reply.code(500).send({"message": "Unable to validate"})
+                return
             })
         })
         .catch((error) => {
             console.error(error)
             reply.code(500).send({"message": "Unable to setup"})
+            return
         })
     }
 }
