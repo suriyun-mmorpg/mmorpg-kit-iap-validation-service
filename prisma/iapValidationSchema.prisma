@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/iap-validation-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model iap_validation_logs {
+  id                          BigInt      @default(autoincrement()) @id
+  userId                      String      @db.VarChar(50)
+  characterId                 String      @db.VarChar(50)
+  receipt                     String      @db.Text
+  status                      Int         @default(0)
+  createdAt                   DateTime    @default(now())
+}

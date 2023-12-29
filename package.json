@@ -1,0 +1,40 @@
+{
+  "name": "mmorpg-kit-iap-validation-service",
+  "version": "0.0.1",
+  "description": "A IAP validation service built with NodeJS, Fastify and Prisma",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json",
+    "start": "node ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/insthync/mmorpg-kit-iap-validation-service.git"
+  },
+  "keywords": [],
+  "author": "Ittipon Teerapruettikulchai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/insthync/mmorpg-kit-iap-validation-service/issues"
+  },
+  "homepage": "https://github.com/insthync/mmorpg-kit-iap-validation-service#readme",
+  "devDependencies": {
+    "@types/in-app-purchase": "^1.11.4",
+    "@types/luxon": "^3.3.7",
+    "@types/node": "^20.10.5",
+    "prisma": "^5.7.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@fastify/auth": "^4.4.0",
+    "@fastify/bearer-auth": "^9.2.1",
+    "@prisma/client": "^5.7.1",
+    "axios": "^1.6.3",
+    "fastify": "^4.25.2",
+    "in-app-purchase": "^1.11.4",
+    "luxon": "^3.4.4",
+    "tslib": "^2.6.2"
+  }
+}
