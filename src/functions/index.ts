@@ -5,9 +5,9 @@ import { PrismaClient as IapValidationClient } from '../../prisma/generated/iap-
 import { IAPValidationForm } from '../interfaces'
 
 const VALIDATION = {
-	SUCCESS: 0,
-	FAILURE: 1,
-	POSSIBLE_HACK: 2
+    SUCCESS: 0,
+    FAILURE: 1,
+    POSSIBLE_HACK: 2
 }
 
 export class IAPValidationService {
@@ -51,8 +51,8 @@ export class IAPValidationService {
     public postIapValidationApi = async (request: FastifyRequest, reply: FastifyReply) => {
         const form: IAPValidationForm = request.body as IAPValidationForm
         if (iap.getService(form.receipt) != iap.UNITY) {
-            reply.code(400).send()
-            return reply
+            reply.code(400).send({ "message": "Not a receipt for Unity" })
+            return
         }
         iap.config({
             googlePublicKeyStrLive: process.env.IAP_GOOGLE_PUBLIC_KEY,
@@ -60,41 +60,39 @@ export class IAPValidationService {
             test: Boolean(process.env.IAP_TEST || true),
             verbose: Boolean(process.env.IAP_VERBOSE || true),
         })
-        iap.setup()
-        .then(() => {
-            iap.validate(form.receipt)
-            .then(async (response) => {
-                await this.iapValidation.iap_validation_logs.create({
-                    data: {
-                        userId: form.userId,
-                        characterId: form.characterId,
-                        receipt: form.receipt,
-                        status: response.status,
-                        createdAt: DateTime.local().toJSDate(),
-                    }
-                })
-                switch (response.status) {
-                    case VALIDATION.SUCCESS:
-                        reply.code(200).send()
-                        return reply
-                    case VALIDATION.FAILURE:
-                        reply.code(500).send({"message": "Validation status is `FAILURE`"})
-                        return reply
-                    case VALIDATION.POSSIBLE_HACK:
-                        reply.code(500).send({"message": "Validation status is `POSSIBLE_HACK`"})
-                        return reply
+        try {
+            await iap.setup()
+        } catch (error) {
+            console.error(error)
+            reply.code(500).send({ "message": "Unable to setup" })
+            return
+        }
+        try {
+            const response = await iap.validate(form.receipt)
+            await this.iapValidation.iap_validation_logs.create({
+                data: {
+                    userId: form.userId,
+                    characterId: form.characterId,
+                    receipt: form.receipt,
+                    status: response.status,
+                    createdAt: DateTime.local().toJSDate(),
                 }
             })
-            .catch((error) => {
-                console.error(error)
-                reply.code(500).send({"message": "Unable to validate"})
-                return reply
-            })
-        })
-        .catch((error) => {
+            switch (response.status) {
+                case VALIDATION.SUCCESS:
+                    reply.code(200).send()
+                    return
+                case VALIDATION.FAILURE:
+                    reply.code(500).send({ "message": "Validation status is `FAILURE`" })
+                    return
+                case VALIDATION.POSSIBLE_HACK:
+                    reply.code(500).send({ "message": "Validation status is `POSSIBLE_HACK`" })
+                    return
+            }
+        } catch (error) {
             console.error(error)
-            reply.code(500).send({"message": "Unable to setup"})
-            return reply
-        })
+            reply.code(500).send({ "message": "Unable to validate" })
+            return
+        }
     }
 }
