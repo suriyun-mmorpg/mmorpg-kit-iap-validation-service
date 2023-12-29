@@ -52,7 +52,7 @@ export class IAPValidationService {
         const form: IAPValidationForm = request.body as IAPValidationForm
         if (iap.getService(form.receipt) != iap.UNITY) {
             reply.code(400).send()
-            return
+            return reply
         }
         iap.config({
             googlePublicKeyStrLive: process.env.IAP_GOOGLE_PUBLIC_KEY,
@@ -76,25 +76,25 @@ export class IAPValidationService {
                 switch (response.status) {
                     case VALIDATION.SUCCESS:
                         reply.code(200).send()
-                        return
+                        return reply
                     case VALIDATION.FAILURE:
                         reply.code(500).send({"message": "Validation status is `FAILURE`"})
-                        return
+                        return reply
                     case VALIDATION.POSSIBLE_HACK:
                         reply.code(500).send({"message": "Validation status is `POSSIBLE_HACK`"})
-                        return
+                        return reply
                 }
             })
             .catch((error) => {
                 console.error(error)
                 reply.code(500).send({"message": "Unable to validate"})
-                return
+                return reply
             })
         })
         .catch((error) => {
             console.error(error)
             reply.code(500).send({"message": "Unable to setup"})
-            return
+            return reply
         })
     }
 }
