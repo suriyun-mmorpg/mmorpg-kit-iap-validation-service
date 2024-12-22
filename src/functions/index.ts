@@ -13,7 +13,6 @@ const VALIDATION = {
 export class IAPValidationService {
     iapValidation: IapValidationClient
 
-
     constructor(iapValidation: IapValidationClient) {
         this.iapValidation = iapValidation;
         (BigInt.prototype as any).toJSON = function () {
@@ -57,8 +56,8 @@ export class IAPValidationService {
         iap.config({
             googlePublicKeyStrLive: process.env.IAP_GOOGLE_PUBLIC_KEY,
             googlePublicKeyStrSandBox: process.env.IAP_GOOGLE_PUBLIC_KEY_SANDBOX,
-            test: Boolean(process.env.IAP_TEST || true),
-            verbose: Boolean(process.env.IAP_VERBOSE || true),
+            test: process.env.IAP_TEST ? Boolean(process.env.IAP_TEST) : false,
+            verbose: process.env.IAP_VERBOSE ? Boolean(process.env.IAP_VERBOSE) : true,
         })
         try {
             await iap.setup()
