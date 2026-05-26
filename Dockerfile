@@ -11,7 +11,7 @@ COPY tsconfig.json ./tsconfig.json
 
 USER root
 
-RUN npm install --force
+RUN npm install
 RUN npx prisma generate --schema "./prisma/iapValidationSchema.prisma"
 RUN npm run build
 RUN rm -rf ./src
