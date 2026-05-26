@@ -1,11 +1,14 @@
 import fastify, { FastifyListenOptions } from 'fastify'
 import authPlugin from '@fastify/auth'
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient as IapValidationClient } from '../prisma/generated/iap-validation-client'
 import { IAPValidationForm } from './interfaces'
 import { IAPValidationService } from './functions'
 
 const secretKeys: string = process.env.SECRET_KEYS ? process.env.SECRET_KEYS : "[\"secret\"]"
-const iapValidationClient = new IapValidationClient()
+const databaseUrl: string = process.env.DATABASE_URL ? process.env.DATABASE_URL : "mysql://root:password@localhost:3306/mmorpg_kit_iap_validation"
+const prismaAdapter = new PrismaMariaDb(databaseUrl)
+const iapValidationClient = new IapValidationClient({ adapter: prismaAdapter })
 
 const validateAppAccess = async(request: any, reply: any, done: (err?: Error) => void) =>
 {
