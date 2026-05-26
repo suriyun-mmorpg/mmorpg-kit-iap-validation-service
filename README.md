@@ -6,7 +6,7 @@ IAP validation service for MMORPG KIT
 
 ## Install
 - Clone this repo
-- `npm i --force`
+- `npm i`
 
 ## Generate Prisma Clients
 - `npx prisma generate --schema "./prisma/iapValidationSchema.prisma"`
@@ -21,7 +21,7 @@ IAP validation database's provider is MySQL, so you have to prepare MySQL server
 - `DATABASE_URL` is connection string to connect to IAP validation database.
 
 ## IAP Validation Database Creation
-After you set `DATABASE_URL` properly, then you have to push tables by uses command `npx prisma db push --schema "./prisma/iapValidationSchema.prisma"`
+After you set `DATABASE_URL` properly, then you have to push tables by uses command `npx prisma migrate deploy --schema "./prisma/iapValidationSchema.prisma"`
 
 ## Build and Start
 ```
