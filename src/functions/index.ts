@@ -49,6 +49,23 @@ export class IAPValidationService {
 
     public postIapValidationApi = async (request: FastifyRequest, reply: FastifyReply) => {
         const form: IAPValidationForm = request.body as IAPValidationForm
+        const platform = form.platform.toLowerCase();
+        const iOSPlatform = "IPhonePlayer".toLowerCase();
+        const appleJwsRepresentation = form.appleJwsRepresentation;
+        if (platform == iOSPlatform && appleJwsRepresentation) {
+            // TODO: new iOS validation, validate this later
+            await this.iapValidation.iap_validation_logs.create({
+                data: {
+                    userId: form.userId,
+                    characterId: form.characterId,
+                    receipt: form.receipt,
+                    status: VALIDATION.SUCCESS,
+                    createdAt: DateTime.local().toJSDate(),
+                }
+            })
+            reply.code(200).send()
+            return;
+        }
         if (iap.getService(form.receipt) != iap.UNITY) {
             reply.code(400).send({ "message": "Not a receipt for Unity" })
             return

@@ -1,6 +1,8 @@
 export interface IAPValidationForm {
-    packageId: string,
     userId: string,
     characterId: string,
+    platform: string,
+    transactionID: string,
     receipt: string,
+    appleJwsRepresentation?: string,
 }
